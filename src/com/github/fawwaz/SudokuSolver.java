@@ -256,13 +256,53 @@ public class SudokuSolver {
                     
         }
         
-        
-//        System.out.println("Jumlah emptycells : "+num_emptycells);
-//        
-//        for (int i = 0; i < num_emptycells; i++) {
-//            System.out.println("["+i+"] : X="+emptycells[i][0]+" Y ="+emptycells[i][1]+" Z "+emptycells[i][2]);
-//        }
     }
+    
+    public void solve_with_heuristic(Integer[][] the_sudoku){
+        int i = 0;
+        int currentCellDigit = 0;
+        int num_emptycells = countEmptyCells(the_sudoku);
+        int[][] emptycells = new int[num_emptycells][3];
+        initEmptyCells(the_sudoku, emptycells);
+        
+        while(i<num_emptycells){
+
+            //display_sudoku(the_sudoku);
+            if(currentCellDigit != 9){
+                currentCellDigit++;
+                
+                System.out.println("Iterasi ke -"+i+" Current Digit : " +currentCellDigit + "Y :"+emptycells[i][0]+ " X :"+emptycells[i][1]);
+                the_sudoku[emptycells[i][0]][emptycells[i][1]] = currentCellDigit;
+                
+                if(isConsistent(the_sudoku)){
+                    i++;
+                    currentCellDigit =0; // reset
+                }else{
+                    // just continue or ?
+                }
+            }else{
+                // reset current cell to 0
+                System.out.println("Backtrack..");
+                the_sudoku[emptycells[i][0]][emptycells[i][1]] = 0;
+                i--;
+                currentCellDigit = the_sudoku[emptycells[i][0]][emptycells[i][1]];
+                if(i<0){
+                    break;
+                }
+            }
+        }
+        
+        // final check
+        if(isConsistent(the_sudoku)){
+            System.out.println("Solved with a solution :");
+            display_sudoku(the_sudoku);
+        }else{
+            System.out.println("[ERROR] Failed To solve the sudoku ");
+                    
+        }
+    }
+    
+    
     
     private void getNextTrial(int[][] emptycells,boolean is_first_time){
         if(is_first_time){
@@ -299,14 +339,14 @@ public class SudokuSolver {
     }
     
     private void doTrial(Integer[][] current_sudoku,int[][] emptycells){
-        System.out.print("[PROGRESS] Trying with a combination :");
+        //System.out.print("[PROGRESS] Trying with a combination :");
         for (int i = 0; i < emptycells.length; i++) {
             int y = emptycells[i][0];
             int x = emptycells[i][1];
             current_sudoku[y][x] = emptycells[i][2];
-            System.out.print(emptycells[i][2]+" ");
+            //System.out.print(emptycells[i][2]+" ");
         }
-        System.out.println();        
+        //System.out.println();        
     }
     
     public void first_experiment(){
@@ -318,11 +358,13 @@ public class SudokuSolver {
             
             // main utama
             solve_without_heuristic(current_sudoku);
+            //solve_with_heuristic(temp_sudoku);
             
             System.out.println("Sudoku ke-"+i+" setelah diselesaikan : ");        
         }
         
     }
+    
     
     /**
      * @param args the command line arguments
