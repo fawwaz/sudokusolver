@@ -349,7 +349,8 @@ public class SudokuSolver {
         //System.out.println();        
     }
     
-    public void first_experiment(){
+    public void first_experiment(boolean isHeuristic){
+        long startTime = System.currentTimeMillis();
         Integer[][] current_sudoku;
         for (int i = 0; i < numsudokus; i++) {
             current_sudoku = getSudoku(i);
@@ -357,12 +358,19 @@ public class SudokuSolver {
             display_sudoku(current_sudoku);
             
             // main utama
-            solve_without_heuristic(current_sudoku);
-            //solve_with_heuristic(temp_sudoku);
+            if(isHeuristic){
+                solve_with_heuristic(temp_sudoku);
+            }else{
+                solve_without_heuristic(current_sudoku);
+            }
+            
+            
             
             System.out.println("Sudoku ke-"+i+" setelah diselesaikan : ");        
         }
-        
+        long endTime = System.currentTimeMillis();
+        long delta = endTime - startTime;
+        System.out.println("Puzzle berhasil diselesaikan  dalam waktu "+delta);
     }
     
     
@@ -371,9 +379,23 @@ public class SudokuSolver {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Scanner s = new Scanner(System.in);
+        System.out.print("What filename should i read ? : ");
+        String filename = s.nextLine();
+        System.out.println("Which algorithm should i use ?");
+        System.out.println("1. Brute force");
+        System.out.println("2. Heuristic");
+        int options = s.nextInt();
+        s.close();
+        System.out.println("Reading filename : "+filename);
         SudokuSolver solver = new SudokuSolver();
-        solver.readFile("sudoku_testcase_10.txt");
-        solver.first_experiment();
+        solver.readFile(filename);
+        if(options==2){
+            solver.first_experiment(true);
+        }else{
+            solver.first_experiment(false);
+        }
+        
     }
     
 }
